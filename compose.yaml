@@ -1,0 +1,63 @@
+services:
+  # Define el servicio web
+  web:
+    build: .
+    container_name: webserver
+    depends_on:
+      db: # Depende de la base de datos para iniciar
+        condition: service_healthy
+    volumes:
+      - ./app:/var/www/html
+      - laravel_storage:/var/www/html/storage         # Volúmenes independientes para
+      - laravel_cache:/var/www/html/bootstrap/cache   # el almacenamiento de laravel
+    ports:
+      - "80:80"
+    networks:
+      - web_network
+    command: > # Ejecuta las migraciones y se levanta el demonio de Apache
+      sh -c "
+        php artisan migrate --force &&
+        apachectl -D FOREGROUND
+      "
+    restart: unless-stopped
+
+  # Define el servicio de BD
+  db:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck: # Se considera que ha iniciado correctamente si inicia sesión.
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - database_data:/var/lib/postgresql
+    networks:
+      - web_network
+    restart: unless-stopped
+
+  # Define el servicio de Dbeaver
+  cloudbeaver:
+      image: dbeaver/cloudbeaver
+      container_name: dbeaver
+      ports:
+        - 8082:8978
+      volumes:
+        - dbeaver_data:/opt/cloudbeaver/workspace
+      networks:
+        - web_network
+      restart: unless-stopped
+
+volumes:
+  laravel_storage:
+  laravel_cache:
+  database_data:
+  dbeaver_data:
+
+networks:
+  web_network:
+    driver: bridge
