@@ -52,6 +52,8 @@ services:
         - web_network
       restart: unless-stopped
 
+  # Define el servicio 
+
 volumes:
   laravel_storage:
   laravel_cache:

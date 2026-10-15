@@ -1,0 +1,4 @@
+certs
+.env
+dynu-credentials.ini
+openssl.sh
