@@ -2,26 +2,20 @@ services:
   certbot:
     build: .
     container_name: certbot
+    restart: unless-stopped
+
     environment:
       - EMAIL
       - DOMAIN
       - ALTDOMAIN
-    command: >-
-             certbot certonly --reinstall
-             --authenticator dns-dynu
-             --dns-dynu-credentials /root/dynu-credentials.ini
-             --email ${EMAIL} --agree-tos --no-eff-email
-             --preferred-challenges dns
-             --post-hook 'chown root:${GRUPO} /etc/letsencrypt/live /etc/letsencrypt/archive \
-               && chmod 710 /etc/letsencrypt/live /etc/letsencrypt/archive \
-               && chown root:${GRUPO} /etc/letsencrypt/archive/${DOMAIN}/privkey*.pem \
-               && chmod 640 /etc/letsencrypt/archive/${DOMAIN}/privkey*.pem' 
-             -d ${DOMAIN} -d ${ALTDOMAIN}
+      - GRUPO
+
     volumes:
       - ./certs:/etc/letsencrypt
-      - ./dynu-credentials.ini:/root/dynu-credentials.ini
+      - ./dynu-credentials.ini:/root/dynu-credentials.ini:ro
+
     networks:
-    - web_network
+      - web_network
 
 networks:
   web_network:
