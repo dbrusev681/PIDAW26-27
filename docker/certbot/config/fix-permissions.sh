@@ -2,8 +2,8 @@
 
 set -eu
 
-DOMAIN="DOMAIN:?DOMAINisrequired"
-GRUPO="{GRUPO:?GRUPO is required}"
+DOMAIN="${DOMAIN:?DOMAIN is required}"
+GRUPO="${GRUPO:?GRUPO is required}"
 
 chown root:"${GRUPO}" /etc/letsencrypt/live /etc/letsencrypt/archive
 

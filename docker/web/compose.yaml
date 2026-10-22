@@ -8,7 +8,8 @@ services:
         condition: service_healthy
     volumes:
       - ./app:/var/www/html
-      - laravel_storage:/var/www/html/storage         # Volúmenes independientes para
+      - ../certbot/certs:/etc/letsencrypt:ro          # Certificados en solo lectura
+      - laravel_storage:/var/www/html/storage         # Volumenes independientes para
       - laravel_cache:/var/www/html/bootstrap/cache   # el almacenamiento de laravel
     ports:
       - "80:80"
