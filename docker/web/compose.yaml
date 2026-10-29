@@ -1,6 +1,6 @@
 services:
   # Define el servicio web
-  web:
+  webserver:
     build: .
     container_name: webserver
     depends_on:
@@ -13,6 +13,7 @@ services:
       - laravel_cache:/var/www/html/bootstrap/cache   # el almacenamiento de laravel
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - web_network
     command: > # Ejecuta las migraciones y se levanta el demonio de Apache
