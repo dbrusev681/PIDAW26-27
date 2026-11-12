@@ -10,7 +10,7 @@ services:
       - ./app:/var/www/html
       - ../certbot/certs:/etc/letsencrypt:ro          # Certificados en solo lectura
       - laravel_storage:/var/www/html/storage         # Volumenes independientes para
-      - laravel_cache:/var/www/html/bootstrap/cache   # el almacenamiento de laravel
+#      - laravel_cache:/var/www/html/bootstrap/cache   # el almacenamiento de laravel
     ports:
       - "80:80"
       - "443:443"
@@ -58,7 +58,7 @@ services:
 
 volumes:
   laravel_storage:
-  laravel_cache:
+#  laravel_cache:
   database_data:
   dbeaver_data:
 
