@@ -1,7 +1,9 @@
 services:
   # Define el servicio web
   webserver:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.webserver
     container_name: webserver
     depends_on:
       db: # Depende de la base de datos para iniciar
@@ -17,12 +19,27 @@ services:
       - web_network
     command: > # Ejecuta las migraciones y se levanta el demonio de Apache
       sh -c "
-        php artisan migrate --force &&
+        php artisan migrate &&
         apachectl -D FOREGROUND
       "
     restart: unless-stopped
 
-  # Define el servicio de BD
+  # Define el servicio de Frontend (Node.js + Vite)
+  frontend:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.node
+    container_name: frontend_vite
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "5173:5173" # Puerto nativo de Vite
+    networks:
+      - web_network
+    restart: always
+    command: sh -c "npm install && npm run build && tail -f /dev/null"
+
+  # Define el servicio de PostgreSQL
   db:
     image: postgres
     container_name: database
@@ -30,7 +47,7 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    healthcheck: # Se considera que ha iniciado correctamente si inicia sesión.
+    healthcheck: # Se considera que ha iniciado correctamente si inicia sesion.
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_DATABASE}"]
       interval: 5s
       timeout: 5s
@@ -52,8 +69,6 @@ services:
       networks:
         - web_network
       restart: unless-stopped
-
-  # Define el servicio 
 
 volumes:
   laravel_storage:
