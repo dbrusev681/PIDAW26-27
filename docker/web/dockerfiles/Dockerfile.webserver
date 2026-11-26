@@ -70,6 +70,9 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Permitir las reglas de redirección de los .htaccess de Laravel 
+RUN sed -ri '/<Directory \$\{APACHE_DOCUMENT_ROOT\}>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
 # Copiamos el archivo de configuración de la página y ejecutamos a2enmod
 COPY ./config/tallerdigital-ssl.conf /etc/apache2/sites-available/tallerdigital-ssl.conf
 RUN a2dissite 000-default && a2ensite tallerdigital-ssl
