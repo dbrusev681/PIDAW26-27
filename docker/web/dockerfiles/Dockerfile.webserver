@@ -13,20 +13,20 @@ RUN apt-get update && \
 # Instalamos Apache y PHP
 RUN apt-get install -y --no-install-recommends \
     apache2 \
-    php8.5=8.5.12* \
-    libapache2-mod-php8.5=8.5.12* \
-    php8.5-cli=8.5.12* \
-    php8.5-common=8.5.12* \
-    php8.5-mysql=8.5.12* \
-    php8.5-pgsql=8.5.12* \
-    php8.5-sqlite3=8.5.12* \
-    php8.5-gd=8.5.12* \
-    php8.5-zip=8.5.12* \
-    php8.5-bcmath=8.5.12* \
-    php8.5-mbstring=8.5.12* \
-    php8.5-xml=8.5.12* \
-    php8.5-curl=8.5.12* \
-    php8.5-intl=8.5.12* \
+    php8.5 \
+    libapache2-mod-php8.5 \
+    php8.5-cli \
+    php8.5-common \
+    php8.5-mysql \
+    php8.5-pgsql \
+    php8.5-sqlite3 \
+    php8.5-gd \
+    php8.5-zip \
+    php8.5-bcmath \
+    php8.5-mbstring \
+    php8.5-xml \
+    php8.5-curl \
+    php8.5-intl \
     unzip \
     zip \
     git \
@@ -69,6 +69,9 @@ RUN chown -R www-data:www-data \
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Permitir las reglas de redirección de los .htaccess de Laravel 
+RUN sed -ri '/<Directory \$\{APACHE_DOCUMENT_ROOT\}>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Copiamos el archivo de configuración de la página y ejecutamos a2enmod
 COPY ./config/tallerdigital-ssl.conf /etc/apache2/sites-available/tallerdigital-ssl.conf
