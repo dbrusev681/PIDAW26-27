@@ -13,20 +13,20 @@ RUN apt-get update && \
 # Instalamos Apache y PHP
 RUN apt-get install -y --no-install-recommends \
     apache2 \
-    php8.5=8.5.12* \
-    libapache2-mod-php8.5=8.5.12* \
-    php8.5-cli=8.5.12* \
-    php8.5-common=8.5.12* \
-    php8.5-mysql=8.5.12* \
-    php8.5-pgsql=8.5.12* \
-    php8.5-sqlite3=8.5.12* \
-    php8.5-gd=8.5.12* \
-    php8.5-zip=8.5.12* \
-    php8.5-bcmath=8.5.12* \
-    php8.5-mbstring=8.5.12* \
-    php8.5-xml=8.5.12* \
-    php8.5-curl=8.5.12* \
-    php8.5-intl=8.5.12* \
+    php8.5 \
+    libapache2-mod-php8.5 \
+    php8.5-cli \
+    php8.5-common \
+    php8.5-mysql \
+    php8.5-pgsql \
+    php8.5-sqlite3 \
+    php8.5-gd \
+    php8.5-zip \
+    php8.5-bcmath \
+    php8.5-mbstring \
+    php8.5-xml \
+    php8.5-curl \
+    php8.5-intl \
     unzip \
     zip \
     git \
